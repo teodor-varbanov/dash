@@ -2,7 +2,7 @@ use nix::sys::wait;
 use nix::unistd::{fork, ForkResult};
 use std::io;
 use std::io::Write;
-use std::process;
+// use std::process;
 use std::process::Command;
 
 fn main() {
@@ -19,13 +19,10 @@ fn main() {
             }
             Ok(ForkResult::Child) => {
                 input.pop();
-
-                Command::new(input)
-                    .spawn()
-                    .expect("Command not found.");
-                process::exit(0x0100);
+                let child = Command::new(input).spawn();
+                let output = child.expect("Error").wait_with_output();
             }
-            
+
             Err(_) => println!("Fork failed"),
         }
     }
